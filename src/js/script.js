@@ -26,8 +26,8 @@ class BookList {
     const thisBookList = this;
 
     for (let eachBookdata of dataSource.books) {
-    // const ratingBgc = this.determineRatingBgc(eachBookdata.rating);
-    // const ratingWidth = eachBookdata.rating * 10;
+      const ratingBgc = this.determineRatingBgc(eachBookdata.rating);
+      const ratingWidth = eachBookdata.rating * 10;
       const generatedHTML = thisBookList.bookTemplate(eachBookdata);
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
       console.log (generatedDOM);
@@ -97,14 +97,50 @@ class BookList {
         thisBookList.filters.splice(valueIndex, 1);
       }
 
-      console.log(thisBookList.filters)
+      console.log(thisBookList.filters);
       thisBookList.filterBooks();
     });
 
   }
-
+  /* FILTER BOOKS */
+  
   filterBooks() {
-    // TO DO
+    for (let eachBookdata of dataSource.books) {
+      let shouldBeHidden = false;
+
+      for (const option of this.filters) {
+        if (!eachBookdata.details[option] == false) {
+          shouldBeHidden = true;
+          break;
+        }
+      }
+      const bookImage = this.booksList.querySelector(
+        '.book__image[data-id="' + eachBookdata.id + '"'
+      );
+      if (shouldBeHidden === true) {
+        bookImage.classList.add('hidden');
+      } else {
+        bookImage.classList.remove('hidden');
+      }
+    }
+  }
+
+  /* Ratings */
+  determineRatingBgc(rating) {
+    let ratingBackground = '';
+    if (rating < 6) {
+      ratingBackground =
+      'linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)';
+    } else if (rating > 6 && rating <= 8) {
+      ratingBackground = 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%);';
+    } else if (rating > 8 && rating <= 9) {
+      ratingBackground = 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+    } else if (rating > 9) {
+      ratingBackground = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
+    }
+    return ratingBackground;
+  
+  // console.log("ratingBackground", ratingBackground);
   }
 }
 
