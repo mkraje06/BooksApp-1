@@ -1,8 +1,9 @@
 class BookList {
   constructor() {
     const thisBookList = this;
-      
+
     thisBookList.getElements();
+    thisBookList.initData();
     thisBookList.render();
     thisBookList.initActions();
     thisBookList.favoriteBook = 'favorite';
@@ -15,7 +16,7 @@ class BookList {
 
   getElements() {
     const thisBookList = this;
-        
+
     thisBookList.booksList = document.querySelector('.books-list');
     thisBookList.bookTemplate = Handlebars.compile(
       document.querySelector('#template-book').innerHTML
@@ -25,9 +26,9 @@ class BookList {
   render() {
     const thisBookList = this;
 
-    for (let eachBookdata of dataSource.books) {
-      const ratingBgc = this.determineRatingBgc(eachBookdata.rating);
-      const ratingWidth = eachBookdata.rating * 10;
+    for (let eachBookdata of thisBookList.data) {
+      eachBookdata.ratingBgc = this.determineRatingBgc(eachBookdata.rating);
+      eachBookdata.ratingWidth = eachBookdata.rating * 10;
       const generatedHTML = thisBookList.bookTemplate(eachBookdata);
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
       console.log (generatedDOM);
@@ -35,12 +36,12 @@ class BookList {
     }
   }
 
-  
+
   initActions() {
     const thisBookList = this;
 
     const favoriteBooks = [];
-  
+
     console.log('favoriteBooks', favoriteBooks);
 
     const booksFronts = thisBookList.booksList.querySelectorAll('.book__image');
@@ -51,19 +52,19 @@ class BookList {
         console.log('bookFront :', bookFront);
         const favoriteBookAtribute = bookFront.getAttribute('data-id');
         const theBookIndex = favoriteBooks.indexOf(favoriteBookAtribute);
-          
+
         //Jeśli id znajduje się w tablicy ulubionych książek
         if (!favoriteBooks[theBookIndex]) {
-            
+
           //Dodaj id książki do tablicy favoriteBooks
           favoriteBooks.push(favoriteBookAtribute);
-            
+
           //oraz nada mu klasę 'favorite'
           bookFront.classList.add(thisBookList.favoriteBook);
-            
+
           console.log('add ' + favoriteBookAtribute + ' to favoriteBooks');
-        } 
-        
+        }
+
         else {
           favoriteBooks.splice(theBookIndex, 1);
           console.log('remove ' + favoriteBookAtribute + ' to favoriteBooks');
@@ -88,8 +89,8 @@ class BookList {
         console.log('Add', value, 'to filters');
 
         thisBookList.filters.push(value);
-      } 
-  
+      }
+
       else if (clickedElementIsCheckbox && clickedElement.checked == false) {
         console.log('Remove', value, 'from filters');
 
@@ -103,7 +104,7 @@ class BookList {
 
   }
   /* FILTER BOOKS */
-  
+
   filterBooks() {
     for (let eachBookdata of dataSource.books) {
       let shouldBeHidden = false;
@@ -139,7 +140,7 @@ class BookList {
       ratingBackground = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
     }
     return ratingBackground;
-  
+
   // console.log("ratingBackground", ratingBackground);
   }
 }
